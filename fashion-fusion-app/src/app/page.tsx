@@ -1,11 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, Star, TrendingUp, ShoppingBag, Heart, Menu, X, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Search, Star, TrendingUp, ShoppingBag, Heart, Menu, X, Facebook, Twitter, Instagram, Linkedin  , LogOut , User2} from 'lucide-react'
+import {useRouter} from 'next/navigation';
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
+  authDomain: "fypfashionfusion.firebaseapp.com",
+  projectId: "fypfashionfusion",
+  storageBucket: "fypfashionfusion.firebasestorage.app",
+  messagingSenderId: "704360142609",
+  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
+  measurementId: "G-B2Y77JTHBX"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -15,6 +31,32 @@ export default function HomePage() {
     { name: "Gul Ahmed", image: "https://images.pexels.com/photos/5705090/pexels-photo-5705090.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
     { name: "Sana Safinaz", image: "https://images.pexels.com/photos/12165038/pexels-photo-12165038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
   ]
+
+  const [user, setUser] = useState<User | null>(null); 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); 
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    if (!user) {
+      // If no user is logged in, return early and do nothing
+      return;
+    }
+
+    try {
+      await signOut(auth); // Sign out the user
+      setUser(null); // Update user state to null after logging out
+      router.push('/auth'); // Redirect to auth page or another page after logging out
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50">
@@ -32,6 +74,22 @@ export default function HomePage() {
               <a href="#featured-brands" className="text-gray-600 hover:text-purple-700">Featured Brands</a>
               <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
             </nav>
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" size="icon">
+                <User2 className="h-5 w-5" />
+                <span className="sr-only">User account</span>
+              </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="sr-only">Shopping bag</span>
+              </Button>
+              {user && (
+                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5"/>
+                  <span className="sr-only">Log Out</span>
+                </Button>
+              )}
+            </div>
             <div className="md:hidden">
               <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -48,6 +106,22 @@ export default function HomePage() {
                 <a href="#featured-brands" className="text-gray-600 hover:text-purple-700">Featured Brands</a>
                 <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
               </nav>
+              <div className="hidden md:flex items-center space-x-4">
+                <Button variant="ghost" size="icon">
+                  <User2 className="h-5 w-5" />
+                  <span className="sr-only">User account</span>
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <ShoppingBag className="h-5 w-5" />
+                  <span className="sr-only">Shopping bag</span>
+                </Button>
+                {user && (
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5"/>
+                    <span className="sr-only">Log Out</span>
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>

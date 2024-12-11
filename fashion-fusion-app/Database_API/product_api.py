@@ -20,7 +20,8 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), index=True)
     price = Column(Float)
-    specialPrice = Column(Float, nullable=True)  # Allow NULL values
+    specialPrice = Column(Float, nullable=True)  
+    description = Column(String)
     url = Column(String(255))
     images = Column(String(255))
     categoryId = Column(Integer, ForeignKey('Category.id'))
@@ -33,7 +34,8 @@ class ProductOut(BaseModel):
     id: int
     name: str
     price: float
-    specialPrice: Optional[float]  # Make this field optional
+    specialPrice: Optional[float]
+    description: str  # Make this field optional
     url: str
     images: str
     categoryId: int

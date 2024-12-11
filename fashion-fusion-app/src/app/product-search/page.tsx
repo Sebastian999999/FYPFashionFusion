@@ -7,14 +7,30 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
-import { Search, Filter, Sparkles, Tag, Heart, Star, Facebook, Twitter, Instagram, Linkedin, Menu, X, User, ShoppingBag } from 'lucide-react'
+import { Search, Filter, Sparkles, Tag, Heart, Star, Facebook, Twitter, Instagram, Linkedin, Menu, X, User2, ShoppingBag, LogOut } from 'lucide-react'
 import Link from 'next/link'
+import {useRouter} from 'next/navigation';
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth'
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
+  authDomain: "fypfashionfusion.firebaseapp.com",
+  projectId: "fypfashionfusion",
+  storageBucket: "fypfashionfusion.firebasestorage.app",
+  messagingSenderId: "704360142609",
+  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
+  measurementId: "G-B2Y77JTHBX"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 interface Product {
   id: number
   name: string
   price: number
   specialPrice: number | null
+  description: string
   url: string
   images: string
   categoryId: number
@@ -37,6 +53,31 @@ export default function ProductSearch() {
   const [categories, setCategories] = useState<{ id: number; name: string }[]>([])
   const [brands, setBrands] = useState<{ id: number; name: string }[]>([])
 
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null); 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); 
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    if (!user) {
+      // If no user is logged in, return early and do nothing
+      return;
+    }
+
+    try {
+      await signOut(auth); // Sign out the user
+      setUser(null); // Update user state to null after logging out
+      router.push('/auth'); // Redirect to auth page or another page after logging out
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+  
   useEffect(() => {
     const updateColumns = () => {
       if (window.innerWidth < 640) setColumns(1)
@@ -59,7 +100,7 @@ export default function ProductSearch() {
     setError(null);
     try {
       console.log('Fetching products...');
-      const response = await fetch('http://localhost:8000/products/');
+      const response = await fetch('http://localhost:8001/products/');
       console.log('Response:', response);
       if (!response.ok) {
         console.error('Response status:', response.status, response.statusText);
@@ -136,7 +177,7 @@ export default function ProductSearch() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-purple-700">PakFashionReviews</h1>
+              <h1 className="text-2xl font-bold text-purple-700">FashionFusion</h1>
             </div>
             <nav className="hidden md:flex space-x-4">
               <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
@@ -147,13 +188,19 @@ export default function ProductSearch() {
             </nav>
             <div className="hidden md:flex items-center space-x-4">
               <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+                <User2 className="h-5 w-5" />
                 <span className="sr-only">User account</span>
               </Button>
               <Button variant="ghost" size="icon">
                 <ShoppingBag className="h-5 w-5" />
                 <span className="sr-only">Shopping bag</span>
               </Button>
+              {user && (
+                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5"/>
+                  <span className="sr-only">Log Out</span>
+                </Button>
+              )}
             </div>
             <div className="md:hidden">
               <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -171,15 +218,21 @@ export default function ProductSearch() {
                 <Link href="/about" className="text-gray-600 hover:text-purple-700">About</Link>
                 <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
               </nav>
-              <div className="flex items-center space-x-4 mt-4">
+              <div className="hidden md:flex items-center space-x-4">
                 <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+                  <User2 className="h-5 w-5" />
                   <span className="sr-only">User account</span>
                 </Button>
                 <Button variant="ghost" size="icon">
                   <ShoppingBag className="h-5 w-5" />
                   <span className="sr-only">Shopping bag</span>
                 </Button>
+                {user && (
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5"/>
+                    <span className="sr-only">Log Out</span>
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -188,7 +241,7 @@ export default function ProductSearch() {
 
       <div className="relative bg-cover bg-center h-96 mb-8" style={{backgroundImage: 'url("https://images.pexels.com/photos/5705080/pexels-photo-5705080.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'}}>
         <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-4">
-          <h2 className="text-5xl font-bold mb-4 text-center">Pakistani Fashion Search</h2>
+          <h2 className="text-5xl font-bold mb-4 text-center">Fashion Search</h2>
           <p className="text-xl mb-8 text-center">Discover and review the latest trends in Pakistani fashion</p>
           <div className="relative w-full max-w-md">
             <Input
@@ -293,7 +346,7 @@ export default function ProductSearch() {
                     </p>
                   </CardContent>
                   <CardFooter className="bg-gradient-to-r from-purple-500 to-pink-500 p-2">
-                  <Link 
+                  <Link className='w-full'
                     href={{
                       pathname: '/product', // Just use /product as you're not using a dynamic route anymore
                       query: {
@@ -301,8 +354,10 @@ export default function ProductSearch() {
                         name: product.name,
                         brand: brands.find(b => b.id === product.brandId)?.name || 'Default Brand',
                         category: categories.find(c => c.id === product.categoryId)?.name || 'Default Category',
+                        description: product.description,
                         price: product.specialPrice || product.price,
                         image: product.images,
+                        url: product.url,
                       },
                     }} 
                     passHref
@@ -359,7 +414,7 @@ export default function ProductSearch() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2023 Pakistani Fashion Reviews. All rights reserved.</p>
+            <p className="text-sm">&copy; 2024 Fashion Fusion. All rights reserved.</p>
           </div>
         </div>
       </footer>

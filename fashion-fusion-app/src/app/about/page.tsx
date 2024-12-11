@@ -1,14 +1,52 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin, User2, LogOut, ShoppingBag } from 'lucide-react'
+import {useRouter} from 'next/navigation';
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth'
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
+  authDomain: "fypfashionfusion.firebaseapp.com",
+  projectId: "fypfashionfusion",
+  storageBucket: "fypfashionfusion.firebasestorage.app",
+  messagingSenderId: "704360142609",
+  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
+  measurementId: "G-B2Y77JTHBX"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export default function AboutPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null); 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); 
+    });
 
+    return () => unsubscribe();
+  }, []);
+  const handleLogout = async () => {
+    if (!user) {
+      // If no user is logged in, return early and do nothing
+      return;
+    }
+
+    try {
+      await signOut(auth); // Sign out the user
+      setUser(null); // Update user state to null after logging out
+      router.push('/auth'); // Redirect to auth page or another page after logging out
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
       <header className="bg-white shadow-md">
@@ -27,11 +65,27 @@ export default function AboutPage() {
               <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
               
             </nav>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" size="icon">
+                <User2 className="h-5 w-5" />
+                <span className="sr-only">User account</span>
               </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="sr-only">Shopping bag</span>
+              </Button>
+              <Button variant="ghost" size="icon" onClick={handleLogout}>
+                <LogOut className="h-5 w-5"/>
+                <span className="sr-only">Log Out</span>
+              </Button>
+            </div>
+            <div className="md:hidden">
+              {user && (
+                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5"/>
+                  <span className="sr-only">Log Out</span>
+                </Button>
+              )}
             </div>
           </div>
           {mobileMenuOpen && (
@@ -43,18 +97,34 @@ export default function AboutPage() {
               <Link href="/about" className="text-purple-700 hover:text-purple-900 font-semibold">About</Link>
               <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
               </nav>
+              <div className="hidden md:flex items-center space-x-4">
+                <Button variant="ghost" size="icon">
+                  <User2 className="h-5 w-5" />
+                  <span className="sr-only">User account</span>
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <ShoppingBag className="h-5 w-5" />
+                  <span className="sr-only">Shopping bag</span>
+                </Button>
+                {user && (
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5"/>
+                    <span className="sr-only">Log Out</span>
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-purple-700">About PakFashionAI</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-purple-700">About Fashion Fusion</h1>
         
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Our Mission</h2>
           <p className="text-lg mb-4">
-            At PakFashionAI, we're revolutionizing the way Pakistani fashion brands are evaluated and ranked. Our mission is to provide consumers with unbiased, emotion-driven insights into the quality, style, value, and service of Pakistan's top fashion brands.
+            At Fashion Fusion, we are revolutionizing the way Pakistani fashion brands are evaluated and ranked. Our mission is to provide consumers with unbiased, emotion-driven insights into the quality, style, value, and service of Pakistan's top fashion brands.
           </p>
           <p className="text-lg">
             By harnessing the power of artificial intelligence and natural language processing, we analyze thousands of customer reviews to capture the true sentiment behind each brand experience. This innovative approach allows us to go beyond simple star ratings, offering a nuanced understanding of what customers really feel about their fashion purchases.
@@ -114,7 +184,7 @@ export default function AboutPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Understanding Our Scores</h2>
           <p className="text-lg mb-4">
-            Our emotion-based scoring system provides a comprehensive view of brand performance. Here's how to interpret our scores:
+            Our emotion-based scoring system provides a comprehensive view of brand performance. Here is how to interpret our scores:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
@@ -196,7 +266,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Join Us in Revolutionizing Fashion Reviews</h2>
           <p className="text-lg mb-4">
-            Whether you're a fashion enthusiast, a brand representative, or simply curious about the intersection of AI and fashion, we invite you to explore our rankings, contribute your reviews, and be part of this exciting journey in reshaping how we understand and evaluate fashion brands in Pakistan.
+            Whether you are a fashion enthusiast, a brand representative, or simply curious about the intersection of AI and fashion, we invite you to explore our rankings, contribute your reviews, and be part of this exciting journey in reshaping how we understand and evaluate fashion brands in Pakistan.
           </p>
           <div className="flex justify-center">
             <Link href="/ai-brand-rankings">
@@ -244,7 +314,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2023 PakFashionAI. All rights reserved.</p>
+            <p className="text-sm">&copy; 2024 Fashion Fusion. All rights reserved.</p>
           </div>
         </div>
       </footer>

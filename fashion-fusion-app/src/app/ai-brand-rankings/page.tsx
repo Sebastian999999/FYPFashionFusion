@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +20,23 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
-import { Smile, Meh, Frown, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Smile, Meh, Frown, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin , User2 , ShoppingBag , LogOut} from 'lucide-react'
+import {useRouter} from 'next/navigation';
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth'
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
+  authDomain: "fypfashionfusion.firebaseapp.com",
+  projectId: "fypfashionfusion",
+  storageBucket: "fypfashionfusion.firebasestorage.app",
+  messagingSenderId: "704360142609",
+  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
+  measurementId: "G-B2Y77JTHBX"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 interface Brand {
     id: number;
@@ -110,6 +126,31 @@ export default function AIBrandRankingsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [sortBy, setSortBy] = useState<keyof Brand>("overallScore");
 
+  const router = useRouter();
+
+  const [user, setUser] = useState<User | null>(null); 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser); 
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    if (!user) {
+      // If no user is logged in, return early and do nothing
+      return;
+    }
+
+    try {
+      await signOut(auth); // Sign out the user
+      setUser(null); // Update user state to null after logging out
+      router.push('/auth'); // Redirect to auth page or another page after logging out
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
 
   const sortedBrands = [...brands].sort(
     (a, b) => (b[sortBy] as number) - (a[sortBy] as number)
@@ -128,7 +169,7 @@ export default function AIBrandRankingsPage() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Link href="/">
-                <h1 className="text-2xl font-bold text-purple-700">PakFashionAI</h1>
+                <h1 className="text-2xl font-bold text-purple-700">FashionFusion</h1>
               </Link>
             </div>
             <nav className="hidden md:flex space-x-4">
@@ -138,11 +179,27 @@ export default function AIBrandRankingsPage() {
               <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
               <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
             </nav>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="ghost" size="icon">
+                <User2 className="h-5 w-5" />
+                <span className="sr-only">User account</span>
               </Button>
+              <Button variant="ghost" size="icon">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="sr-only">Shopping bag</span>
+              </Button>
+              <Button variant="ghost" size="icon" onClick={handleLogout}>
+                <LogOut className="h-5 w-5"/>
+                <span className="sr-only">Log Out</span>
+              </Button>
+            </div>
+            <div className="md:hidden">
+              {user && (
+                <Button variant="ghost" size="icon" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5"/>
+                  <span className="sr-only">Log Out</span>
+                </Button>
+              )}
             </div>
           </div>
           {mobileMenuOpen && (
@@ -154,6 +211,22 @@ export default function AIBrandRankingsPage() {
                 <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
                 <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
               </nav>
+              <div className="hidden md:flex items-center space-x-4">
+                <Button variant="ghost" size="icon">
+                  <User2 className="h-5 w-5" />
+                  <span className="sr-only">User account</span>
+                </Button>
+                <Button variant="ghost" size="icon">
+                  <ShoppingBag className="h-5 w-5" />
+                  <span className="sr-only">Shopping bag</span>
+                </Button>
+                {user && (
+                  <Button variant="ghost" size="icon" onClick={handleLogout}>
+                    <LogOut className="h-5 w-5"/>
+                    <span className="sr-only">Log Out</span>
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -322,7 +395,7 @@ export default function AIBrandRankingsPage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2023 PakFashionAI. All rights reserved.</p>
+            <p className="text-sm">&copy; 2024 Fashion Fusion. All rights reserved.</p>
           </div>
         </div>
       </footer>

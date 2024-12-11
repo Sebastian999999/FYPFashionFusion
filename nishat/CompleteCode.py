@@ -7,9 +7,10 @@ import time
 import json
 import os
 import requests
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Path to the chromedriver
-webdriver_service = Service('./chromedriver.exe')
+webdriver_service = Service(ChromeDriverManager().install())
 
 # Chrome options to ignore SSL certificate errors
 chrome_options = Options()

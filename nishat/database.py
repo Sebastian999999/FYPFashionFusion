@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS Product (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NULL,
     specialPrice DECIMAL(10, 2) NULL,
+    description TEXT NULL,
     url TEXT NULL,
     images TEXT NULL,
     categoryId INT NOT NULL,
@@ -65,6 +66,7 @@ SELECT EXISTS(
         name <=> %s AND
         price <=> %s AND
         specialPrice <=> %s AND
+        description <=> %s AND
         categoryId <=> %s AND
         brandId <=> %s AND
         url <=> %s AND
@@ -73,8 +75,8 @@ SELECT EXISTS(
 """
 
 sql_insert_product = """
-INSERT INTO Product (name, price, specialPrice, url, images, categoryId, brandId)
-VALUES (%s, %s, %s, %s, %s, %s, %s)
+INSERT INTO Product (name, price, specialPrice, description , url , images, categoryId, brandId)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 
 # Function to insert data into the database
@@ -95,6 +97,7 @@ def insert_data(connection, data):
                         row['title'],
                         row['price'],
                         row['specialPrice'],
+                        row['description'],
                         category_id,
                         brand_id,
                         row['url'],
@@ -107,7 +110,8 @@ def insert_data(connection, data):
                         cursor.execute(sql_insert_product, (
                             row['title'],  
                             row['price'],  
-                            row['specialPrice'],  
+                            row['specialPrice'], 
+                            row['description'] ,
                             row['url'],  
                             row['images'],  
                             category_id,  
