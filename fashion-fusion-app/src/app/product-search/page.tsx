@@ -108,15 +108,16 @@ export default function ProductSearch() {
       }
       const data = await response.json();
       console.log('Fetched data:', data);
-
-       // Parse dates in the fetched data
-    const parsedData = data.map((product: Product) => ({
-      ...product,
-      createdAt: new Date(product.createdAt),
-      updatedAt: new Date(product.updatedAt),
-    }));
-
-    setProducts(parsedData);
+  
+      // Parse dates and extract the first image
+      const parsedData = data.map((product: Product) => ({
+        ...product,
+        createdAt: new Date(product.createdAt),
+        updatedAt: new Date(product.updatedAt),
+        images: product.images.split(',')[0].trim(), // Take the first image
+      }));
+  
+      setProducts(parsedData);
     } catch (err) {
       setError('An error occurred while fetching products');
       console.error('Error during fetch:', err);
@@ -124,6 +125,7 @@ export default function ProductSearch() {
       setLoading(false);
     }
   };
+  
   
 
   const fetchCategories = async () => {
@@ -324,7 +326,7 @@ export default function ProductSearch() {
               {filteredProducts.map(product => (
                 <Card key={product.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="relative">
-                    <img src={product.images} alt={product.name} className="w-full h-64 object-cover" />
+                    <img src={`/product_images/${product.images}`} alt={product.name} className="w-full h-64 object-cover" />
                     <div className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md">
                       <Heart className="w-6 h-6 text-pink-500" />
                     </div>

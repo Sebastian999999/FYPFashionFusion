@@ -182,7 +182,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-1/2">
-            <img src={product.image} alt={product.name} className="w-full h-auto rounded-lg shadow-lg" />
+            <img src={`/product_images/${product.image}`} alt={product.name} className="w-full h-auto rounded-lg shadow-lg" />
           </div>
           <div className="md:w-1/2">
             <h1 className="text-3xl font-bold text-purple-700 mb-2">{product.name}</h1>
