@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-
+import { ChatHelp } from "@/components/chat-help";
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -218,6 +218,12 @@ export default function ProductPage() {
             <h1 className="text-3xl font-bold text-purple-700 mb-2">{product.name}</h1>
             <p className="text-xl text-pink-600 mb-4">Rs. {product.price}</p>
             <p className="text-gray-600 mb-4">{product.description}</p>
+            <div className="mt-4">
+            <ChatHelp 
+              question={`Tell me more about ${product.name} by ${product.brand}`}
+              buttonText="Ask about this product"
+            />
+          </div>
             <div className="flex items-center mb-4">
               <p className="font-semibold mr-2">Brand:</p>
               <p>{product.brand}</p>

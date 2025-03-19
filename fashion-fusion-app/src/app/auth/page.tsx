@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,7 +10,7 @@ import { Facebook, Twitter, Instagram, Linkedin, User, Lock, Mail, Eye, EyeOff, 
 import Link from 'next/link'
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
-import { getAnalytics } from "firebase/analytics";
+//import { getAnalytics } from "firebase/analytics";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile , signOut} from 'firebase/auth'
 
 // Initialize Firebase
@@ -25,7 +25,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+//const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 export default function AuthPage() {

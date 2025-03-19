@@ -11,7 +11,8 @@ import { Search, Filter, Sparkles, Tag, Heart, Star, Facebook, Twitter, Instagra
 import Link from 'next/link'
 import {useRouter} from 'next/navigation';
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth'
+import { ChatHelp } from "@/components/chat-help";
+import { getAuth, /*createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile,*/  signOut ,onAuthStateChanged , User} from 'firebase/auth'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
@@ -309,6 +310,15 @@ export default function ProductSearch() {
                     <span>Rs. {priceRange[0]}</span>
                     <span>Rs. {priceRange[1]}</span>
                   </div>
+                </div>
+                <div className="mb-6">
+                <h3 className="font-semibold mb-2 text-pink-600">Need Help?</h3>
+                <ChatHelp 
+                  question="I'm looking for formal wear around 5000 PKR. Can you recommend some options?"
+                  buttonText="Get Recommendations"
+                  variant="secondary"
+                  className="w-full"
+                />
                 </div>
               </CardContent>
             </Card>

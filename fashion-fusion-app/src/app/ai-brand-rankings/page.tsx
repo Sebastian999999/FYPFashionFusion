@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChatHelp } from "@/components/chat-help";
 import {
   Table,
   TableBody,
@@ -255,6 +256,7 @@ export default function AIBrandRankingsPage() {
         ) : (
           <>
             <div className="mb-6 flex justify-end">
+            <div className="mb-6 flex justify-between items-center">
               <Select value={sortBy} onValueChange={(value: string) => setSortBy(value as keyof BrandWithRanking)}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort by" />
@@ -267,6 +269,13 @@ export default function AIBrandRankingsPage() {
                   <SelectItem value="serviceEmotion">Service Emotion</SelectItem>
                 </SelectContent>
               </Select>
+              
+              <ChatHelp 
+                question="How do these brand rankings work? What factors are considered in the scoring?"
+                buttonText="Understand Rankings"
+                variant="outline"
+              />
+            </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

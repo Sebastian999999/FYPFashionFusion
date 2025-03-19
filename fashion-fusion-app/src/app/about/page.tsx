@@ -4,11 +4,11 @@ import { useState , useEffect} from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin, User2, LogOut, ShoppingBag } from 'lucide-react'
+import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, /*Menu, X, */Facebook, Twitter, Instagram, Linkedin, User2, LogOut, ShoppingBag } from 'lucide-react'
 import {useRouter} from 'next/navigation';
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth'
-
+import { getAuth, /*createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile,*/ signOut , onAuthStateChanged , User} from 'firebase/auth'
+import { ChatHelp } from '@/components/chat-help'
 const firebaseConfig = {
   apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
   authDomain: "fypfashionfusion.firebaseapp.com",
@@ -179,6 +179,19 @@ export default function AboutPage() {
               </CardContent>
             </Card>
           </div>
+          <section className="mb-12">
+          <h2 className="text-2xl font-semibold mb-4 text-purple-600">How Our AI Works</h2>
+          <div className="flex justify-end mb-4">
+            <ChatHelp 
+              question="Can you explain more about how the sentiment analysis works to generate brand scores?"
+              buttonText="Learn more about our AI"
+              variant="outline"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Existing cards */}
+          </div>
+        </section>
         </section>
 
         <section className="mb-12">
