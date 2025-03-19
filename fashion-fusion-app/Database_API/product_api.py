@@ -60,6 +60,7 @@ def get_products_from_db(db: Session, search_query: str = ""):
         return db.query(Product).filter(Product.name.like(f"%{search_query}%")).all()
     return db.query(Product).all()
 
+
 app = FastAPI()
 
 # Allow all origins (adjust as necessary for production)
@@ -70,7 +71,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+@app.get("/products-by-brand/{brand_id}")
+async def get_products_by_brand(brand_id: int, db: Session = Depends(get_db)):
+    """
+    Fetch products by brand ID from the database.
+    """
+    try:
+        products = db.query(Product).filter(Product.brandId == brand_id).all()
+        if not products:
+            raise HTTPException(status_code=404, detail=f"No products found for brand ID {brand_id}")
+        return products
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 @app.get("/products/", response_model=List[ProductOut])
 async def get_products(search_query: str = "", db: Session = Depends(get_db)):
     """
@@ -83,3 +95,29 @@ async def get_products(search_query: str = "", db: Session = Depends(get_db)):
         return products
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+@app.get("/products/{product_id}")
+def get_product(product_id: str):
+    try:
+        # Connect to the database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Query the product
+        cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
+        product = cursor.fetchone()
+        
+        # Close the connection
+        cursor.close()
+        conn.close()
+        
+        if not product:
+            raise HTTPException(status_code=404, detail="Product not found")
+        
+        # Convert to dictionary
+        columns = [desc[0] for desc in cursor.description]
+        product_dict = dict(zip(columns, product))
+        
+        return product_dict
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

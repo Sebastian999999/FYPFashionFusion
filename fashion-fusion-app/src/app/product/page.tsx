@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import { useRouter } from "next/router";
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -10,7 +10,8 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDocs , query , collection} from 'firebase/firestore';
+import { getFirestore, getDocs, query, collection } from 'firebase/firestore';
+import { SentimentAPI } from '@/lib/api';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
@@ -38,9 +39,10 @@ interface Product {
   description: string;
 }
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewComment, setReviewComment] = useState('')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [reviews, setReviews] = useState<any[]>([]) // State for reviews
   const [user, setUser] = useState<any>(null) // State for logged-in user
   const [username, setUsername] = useState<string>('') // State for the logged-in user's username
@@ -56,6 +58,22 @@ export default function ProductPage({ params }: { params: { id: string } }) {
   const url = searchParams.get('url');
   const [product, setProduct] = useState<Product | null>(null);
 
+  // Fetch reviews function
+  const fetchReviews = async () => {
+    try {
+      if (!id) return;
+      
+      const response = await fetch(`http://localhost:8000/get-reviews/?product_id=${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch reviews');
+      }
+      const data = await response.json();
+      setReviews(data.reviews);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+    }
+  };
+
   useEffect(() => {
     if (id && name && brand && price && image) {
       setProduct({
@@ -69,27 +87,16 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         description: description as string,
       });
     }
-
+  
     // Fetch reviews from FastAPI
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/get-reviews/?product_id=${id}`);
-        const data = await response.json();
-        setReviews(data.reviews); // Assuming your FastAPI returns { reviews: [...] }
-      } catch (error) {
-        console.error("Failed to fetch reviews:", error);
-      }
-    };
-
     if (id) {
       fetchReviews();
     }
-
+  
     // Check if user is logged in
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        alert("Current user email is : " + currentUser.email);
         // Fetch username from Firestore using email
         const fetchUsername = async () => {
           try {
@@ -120,9 +127,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         setUsername('');
       }
     });
-
+  
     return () => unsubscribe();
-  }, [id]);
+  }, [id, name, brand, price, image, category, description, url]);
 
   const handleAddReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,7 +137,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       alert("Please log in to submit a review!");
       return;
     }
-  
+
     try {
       const reviewData = {
         product_id: id,
@@ -138,31 +145,54 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         stars: reviewRating,
         review: reviewComment
       };
-  
-      const response = await fetch("http://127.0.0.1:8000/add-review/", {
+
+      // Submit the review to your Reviews API
+      const response = await fetch("http://localhost:8000/add-review/", {
         method: "POST",
         body: JSON.stringify(reviewData),
         headers: {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "Failed to submit review");
       }
-  
+
+      // After successfully adding the review, update brand rankings
+      if (product && product.brand) {
+        const brandId = SentimentAPI.getBrandIdFromName(product.brand);
+        
+        if (brandId) {
+          try {
+            await SentimentAPI.submitReviewAndUpdateRankings({
+              text: reviewComment,
+              brandId: brandId,
+              rating: reviewRating
+            });
+            
+            console.log("Brand rankings updated successfully");
+          } catch (updateError) {
+            console.error("Failed to update brand rankings:", updateError);
+            // Continue execution - don't block the user if this fails
+          }
+        }
+      }
+
       // Reset form
       setReviewRating(0);
       setReviewComment('');
       alert("Review submitted!");
-  
+
+      // Refresh reviews list
+      fetchReviews();
+
     } catch (error) {
       console.error("Error submitting review:", error);
       alert(`Error: ${error}`);
     }
   };
-  
 
   if (!product) {
     return <div>Loading...</div>
