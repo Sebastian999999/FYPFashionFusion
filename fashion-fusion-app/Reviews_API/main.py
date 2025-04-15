@@ -37,7 +37,7 @@ async def get_brand_id_from_product(product_id: str) -> str:
     """
     try:
         # Make sure we're using the correct URL and endpoint
-        response = requests.get(f"http://localhost:8001/products/{product_id}")
+        response = requests.get(f"http://localhost:8000/products/{product_id}")
         
         # Add detailed logging
         print(f"Product API response for product {product_id}: Status {response.status_code}")
@@ -195,7 +195,7 @@ async def get_reviews_by_brand(brand_id: str):
     """
     try:
         # Get all products for this brand
-        products_response = requests.get(f"http://localhost:8001/products-by-brand/{brand_id}")
+        products_response = requests.get(f"http://localhost:8000/products-by-brand/{brand_id}")
         if not products_response.ok:
             raise HTTPException(status_code=500, detail=f"Failed to fetch products for brand: {brand_id}")
         
