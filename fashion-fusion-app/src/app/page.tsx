@@ -1,132 +1,22 @@
 'use client'
 
-import { useState , useEffect} from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, Star, TrendingUp, ShoppingBag, Heart, Menu, X, Facebook, Twitter, Instagram, Linkedin  , LogOut , User2} from 'lucide-react'
-import {useRouter} from 'next/navigation';
-import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, updateProfile, signOut , onAuthStateChanged , User} from 'firebase/auth';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
-  authDomain: "fypfashionfusion.firebaseapp.com",
-  projectId: "fypfashionfusion",
-  storageBucket: "fypfashionfusion.firebasestorage.app",
-  messagingSenderId: "704360142609",
-  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
-  measurementId: "G-B2Y77JTHBX"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { Search, Star, TrendingUp, ShoppingBag, Heart } from 'lucide-react'
 
 export default function HomePage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   const featuredBrands = [
     { name: "Khaadi", image: "https://images.pexels.com/photos/5705080/pexels-photo-5705080.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
     { name: "Gul Ahmed", image: "https://images.pexels.com/photos/5705090/pexels-photo-5705090.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
     { name: "Sana Safinaz", image: "https://images.pexels.com/photos/12165038/pexels-photo-12165038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" },
   ]
 
-  const [user, setUser] = useState<User | null>(null); 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); 
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    if (!user) {
-      // If no user is logged in, return early and do nothing
-      return;
-    }
-
-    try {
-      await signOut(auth); // Sign out the user
-      setUser(null); // Update user state to null after logging out
-      router.push('/auth'); // Redirect to auth page or another page after logging out
-    } catch (error) {
-      console.error('Failed to log out:', error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-purple-700">FashionFusion</h1>
-            </div>
-            <nav className="hidden md:flex space-x-4">
-              <Link href="/" className="text-purple-700 hover:text-purple-900 font-semibold">Home</Link>
-              <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-              <Link href="/ai-brand-rankings" className="text-purple-700 hover:text-purple-900 font-semibold">Brand Rankings</Link>
-              <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-              <a href="#featured-brands" className="text-gray-600 hover:text-purple-700">Featured Brands</a>
-              <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
-            </nav>
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <User2 className="h-5 w-5" />
-                <span className="sr-only">User account</span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="sr-only">Shopping bag</span>
-              </Button>
-              {user && (
-                <Button variant="ghost" size="icon" onClick={handleLogout}>
-                  <LogOut className="h-5 w-5"/>
-                  <span className="sr-only">Log Out</span>
-                </Button>
-              )}
-            </div>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4">
-              <nav className="flex flex-col space-y-2">
-                <Link href="/" className="text-purple-700 hover:text-purple-900 font-semibold">Home</Link>
-                <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-                <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-                <a href="#featured-brands" className="text-gray-600 hover:text-purple-700">Featured Brands</a>
-                <a href="#about" className="text-gray-600 hover:text-purple-700">About</a>
-              </nav>
-              <div className="hidden md:flex items-center space-x-4">
-                <Button variant="ghost" size="icon">
-                  <User2 className="h-5 w-5" />
-                  <span className="sr-only">User account</span>
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <ShoppingBag className="h-5 w-5" />
-                  <span className="sr-only">Shopping bag</span>
-                </Button>
-                {user && (
-                  <Button variant="ghost" size="icon" onClick={handleLogout}>
-                    <LogOut className="h-5 w-5"/>
-                    <span className="sr-only">Log Out</span>
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
+      
       <main>
         <section className="relative bg-cover bg-center h-[calc(100vh-4rem)] flex items-center" style={{backgroundImage: 'url("https://images.pexels.com/photos/5705080/pexels-photo-5705080.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2")'}}>
           <div className="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -198,9 +88,9 @@ export default function HomePage() {
 
         <section id="about" className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-8 text-purple-700">About PakFashionReviews</h2>
+            <h2 className="text-3xl font-bold text-center mb-8 text-purple-700">About FashionFusion Reviews</h2>
             <p className="text-lg text-center max-w-3xl mx-auto mb-8">
-              PakFashionReviews is your go-to platform for discovering and reviewing the latest trends in Pakistani fashion. 
+              FashionFusion is your go-to platform for discovering and reviewing the latest trends in Pakistani fashion. 
               We bring together a curated selection of top brands, honest customer reviews, and expert insights to help you 
               make informed fashion choices.
             </p>
@@ -212,49 +102,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
-      <footer className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mt-16">
-  <div className="container mx-auto px-4 py-8">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div>
-        <h3 className="text-lg font-semibold mb-4">About Us</h3>
-        <p className="text-sm">We use AI to analyze customer reviews and rank Pakistani fashion brands, helping you make informed decisions.</p>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-        <ul className="space-y-2">
-          <li><Link href="/" className="text-sm hover:underline">Home</Link></li>
-          <li><Link href="/search" className="text-sm hover:underline">Top Brands</Link></li>
-          <li><Link href="/search" className="text-sm hover:underline">Latest Reviews</Link></li>
-          <li><Link href="/search" className="text-sm hover:underline">Write a Review</Link></li>
-        </ul>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold mb-4">AI-Powered Rankings</h3>
-        <p className="text-sm">Our advanced AI analyzes thousands of customer reviews to provide unbiased brand rankings.</p>
-        <div className="flex items-center mt-2">
-          <Star className="w-5 h-5 fill-current text-yellow-400" />
-          <Star className="w-5 h-5 fill-current text-yellow-400" />
-          <Star className="w-5 h-5 fill-current text-yellow-400" />
-          <Star className="w-5 h-5 fill-current text-yellow-400" />
-          <Star className="w-5 h-5 fill-current text-yellow-400" />
-        </div>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
-        <div className="flex space-x-4">
-          <a href="#" className="hover:text-gray-300"><Facebook /></a>
-          <a href="#" className="hover:text-gray-300"><Twitter /></a>
-          <a href="#" className="hover:text-gray-300"><Instagram /></a>
-          <a href="#" className="hover:text-gray-300"><Linkedin /></a>
-        </div>
-      </div>
-    </div>
-    <div className="mt-8 pt-8 border-t border-white/10 text-center">
-      <p className="text-sm">&copy; 2023 Pakistani Fashion Reviews. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
     </div>
   )
 }

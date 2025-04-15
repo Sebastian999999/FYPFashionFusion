@@ -22,23 +22,8 @@ import {
 } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
 import { Smile, Meh, Frown, Menu, X, Facebook, Twitter, Instagram, Linkedin, User2, ShoppingBag, LogOut } from 'lucide-react'
-import { useRouter } from 'next/navigation';
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, User, signOut } from 'firebase/auth'
 import { SentimentAPI } from '@/lib/api';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDlLplE7VlgZnIjBSz4Raup8jF_OsFMqGE",
-  authDomain: "fypfashionfusion.firebaseapp.com",
-  projectId: "fypfashionfusion",
-  storageBucket: "fypfashionfusion.firebasestorage.app",
-  messagingSenderId: "704360142609",
-  appId: "1:704360142609:web:f71b16b0f211dde1b81eb0",
-  measurementId: "G-B2Y77JTHBX"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
 // Define Brand interface
 interface Brand {
@@ -97,8 +82,6 @@ export default function AIBrandRankingsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
 
   // Fetch brand rankings
   useEffect(() => {
@@ -141,26 +124,6 @@ export default function AIBrandRankingsPage() {
     fetchRankings();
   }, []);
 
-  // Authentication listener
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    if (!user) return;
-
-    try {
-      await signOut(auth);
-      setUser(null);
-      router.push('/auth');
-    } catch (error) {
-      console.error('Failed to log out:', error);
-    }
-  };
 
   const sortedBrands = [...brands].sort(
     (a, b) => (b[sortBy] as number) - (a[sortBy] as number)
@@ -174,74 +137,7 @@ export default function AIBrandRankingsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <Link href="/">
-                <h1 className="text-2xl font-bold text-purple-700">FashionFusion</h1>
-              </Link>
-            </div>
-            <nav className="hidden md:flex space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-              <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-              <Link href="/ai-brand-rankings" className="text-purple-700 hover:text-purple-900 font-semibold">Brand Rankings</Link>
-              <Link href="/about" className="text-gray-600 hover:text-purple-700">About</Link>
-              <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-            </nav>
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <User2 className="h-5 w-5" />
-                <span className="sr-only">User account</span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="sr-only">Shopping bag</span>
-              </Button>
-              {user && (
-                <Button variant="ghost" size="icon" onClick={handleLogout}>
-                  <LogOut className="h-5 w-5"/>
-                  <span className="sr-only">Log Out</span>
-                </Button>
-              )}
-            </div>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4">
-              <nav className="flex flex-col space-y-2">
-                <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-                <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-                <Link href="/ai-brand-rankings" className="text-purple-700 hover:text-purple-900 font-semibold">Brand Rankings</Link>
-                <Link href="/about" className="text-gray-600 hover:text-purple-700">About</Link>
-                <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-              </nav>
-              <div className="flex items-center space-x-4 mt-4">
-                <Button variant="ghost" size="icon">
-                  <User2 className="h-5 w-5" />
-                  <span className="sr-only">User account</span>
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <ShoppingBag className="h-5 w-5" />
-                  <span className="sr-only">Shopping bag</span>
-                </Button>
-                {user && (
-                  <Button variant="ghost" size="icon" onClick={handleLogout}>
-                    <LogOut className="h-5 w-5"/>
-                    <span className="sr-only">Log Out</span>
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
+      
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-8 text-purple-700">AI-Powered Pakistani Fashion Brand Rankings</h1>
         
@@ -393,46 +289,6 @@ export default function AIBrandRankingsPage() {
         )}
       </main>
 
-      <footer className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">About Us</h3>
-              <p className="text-sm">We use AI to analyze emotional content in customer reviews, providing nuanced rankings of Pakistani fashion brands.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link href="/" className="text-sm hover:underline">Home</Link></li>
-                <li><Link href="/search" className="text-sm hover:underline">Top Brands</Link></li>
-                <li><Link href="/search" className="text-sm hover:underline">Latest Reviews</Link></li>
-                <li><Link href="/search" className="text-sm hover:underline">Write a Review</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">AI-Powered Rankings</h3>
-              <p className="text-sm">Our advanced AI analyzes the emotional content of thousands of customer reviews to provide unbiased, sentiment-based brand rankings.</p>
-              <div className="flex items-center mt-2">
-                <Smile className="w-5 h-5 text-yellow-400 mr-1" />
-                <Meh className="w-5 h-5 text-yellow-400 mr-1" />
-                <Frown className="w-5 h-5 text-yellow-400" />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-gray-300"><Facebook /></a>
-                <a href="#" className="hover:text-gray-300"><Twitter /></a>
-                <a href="#" className="hover:text-gray-300"><Instagram /></a>
-                <a href="#" className="hover:text-gray-300"><Linkedin /></a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2024 Fashion Fusion. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
