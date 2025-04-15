@@ -146,57 +146,6 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 flex flex-col">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/">
-              <h1 className="text-2xl font-bold text-purple-700">FashionFusion</h1>
-            </Link>
-            <nav className="hidden md:flex space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-              <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-              <Link href="/ai-brand-rankings" className="text-gray-600 hover:text-purple-700">AI Brand Rankings</Link>
-              <Link href="/about" className="text-gray-600 hover:text-purple-700">About</Link>
-            </nav>
-            <div className="hidden md:flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-                <span className="sr-only">User account</span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="sr-only">Shopping bag</span>
-              </Button>
-            </div>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4">
-              <nav className="flex flex-col space-y-2">
-                <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-                <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-                <Link href="/ai-brand-rankings" className="text-gray-600 hover:text-purple-700">AI Brand Rankings</Link>
-                <Link href="/about" className="text-gray-600 hover:text-purple-700">About</Link>
-              </nav>
-              <div className="flex items-center space-x-4 mt-4">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">User account</span>
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <ShoppingBag className="h-5 w-5" />
-                  <span className="sr-only">Shopping bag</span>
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
 
       <main className="flex-grow flex items-center justify-center px-4 py-12">
         <Card className="w-full max-w-md">
@@ -384,41 +333,6 @@ export default function AuthPage() {
         </Card>
       </main>
 
-      <footer className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">About Us</h3>
-              <p className="text-sm">We use AI to analyze customer reviews and rank Pakistani fashion brands, helping you make informed decisions.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link href="/" className="text-sm hover:underline">Home</Link></li>
-                <li><Link href="/search" className="text-sm hover:underline">Top Brands</Link></li>
-                <li><Link href="/ai-brand-rankings" className="text-sm hover:underline">AI Rankings</Link></li>
-                <li><Link href="/about" className="text-sm hover:underline">About Us</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">AI-Powered Rankings</h3>
-              <p className="text-sm">Our advanced AI analyzes thousands of customer reviews to provide unbiased brand rankings.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-gray-300"><Facebook /></a>
-                <a href="#" className="hover:text-gray-300"><Twitter /></a>
-                <a href="#" className="hover:text-gray-300"><Instagram /></a>
-                <a href="#" className="hover:text-gray-300"><Linkedin /></a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2024 FashionFusion. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 # RapidAPI configuration
-RAPIDAPI_KEY = "90dd642660msh19a117e02201491p1cb44bjsn1ee84cc6cf8b"
+RAPIDAPI_KEY = "59d2928104msha22a97bd29fee92p1f90f6jsnbe4289dd0b55"
 RAPIDAPI_HOST = "cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com"
 
 # Store conversation history for each session

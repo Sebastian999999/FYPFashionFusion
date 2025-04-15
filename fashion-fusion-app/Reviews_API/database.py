@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, 
 from sqlalchemy.orm import sessionmaker
 
 # Database connection URL (update with your MySQL credentials)
-DATABASE_URL = "mysql+pymysql://root:PokemonDestroyer10000@127.0.0.1:3306/fashionfusion"
+DATABASE_URL = "mysql+pymysql://root:much@127.0.0.1:3306/fashionfusion"
 
 # Create engine and session
 engine = create_engine(DATABASE_URL)
