@@ -44,7 +44,8 @@ export default function ProductSearch() {
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  //const [error, setError] = useState<string | null>(null)
+  const [productError, setProductError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [showPriceIncreased, setShowPriceIncreased] = useState(false)
   const [showPriceDecreased, setShowPriceDecreased] = useState(false)
@@ -140,7 +141,8 @@ export default function ProductSearch() {
 
   const fetchProducts = async () => {
     setLoading(true);
-    setError(null);
+    //setError(null);
+    setProductError(null);
     try {
       // Build query parameters
       const params = new URLSearchParams();
@@ -149,13 +151,8 @@ export default function ProductSearch() {
         params.append('search_query', searchTerm);
       }
       
-      if (selectedCategories.length === 1) {
-        params.append('category_id', selectedCategories[0].toString());
-      }
-      
-      if (selectedBrands.length === 1) {
-        params.append('brand_id', selectedBrands[0].toString());
-      }
+      selectedCategories.forEach(catId => params.append('category_id', catId.toString()));
+      selectedBrands.forEach(brandId => params.append('brand_id', brandId.toString()));
       
       if (priceRange[0] > 0) {
         params.append('price_min', priceRange[0].toString());
@@ -197,6 +194,7 @@ export default function ProductSearch() {
       console.log('Fetched data:', data);
       
       // Process the data for display
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parsedData = data.map((product: any) => ({
         ...product,
         createdAt: new Date(product.createdAt),
@@ -208,8 +206,8 @@ export default function ProductSearch() {
       setDisplayedProducts(parsedData.slice(0, productsPerPage));
       setPage(1); // Reset to first page
     } catch (err) {
-      setError('An error occurred while fetching products');
-      console.error('Error during fetch:', err);
+      console.error('Error fetching products:', err);
+      setProductError('An error occurred while fetching products');
     } finally {
       setLoading(false);
     }
@@ -217,27 +215,27 @@ export default function ProductSearch() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8000/categories/')
+      const response = await fetch('http://localhost:8001/categories/')
       if (!response.ok) {
         throw new Error('Failed to fetch categories')
       }
       const data = await response.json()
       setCategories(data)
     } catch (err) {
-      console.error('Error fetching categories:', err)
+      console.error('Error fetching categories (silent):', err)
     }
   }
 
   const fetchBrands = async () => {
     try {
-      const response = await fetch('http://localhost:8000/brands/')
+      const response = await fetch('http://localhost:8001/brands/')
       if (!response.ok) {
         throw new Error('Failed to fetch brands')
       }
       const data = await response.json()
       setBrands(data)
     } catch (err) {
-      console.error('Error fetching brands:', err)
+console.error('Error fetching brands (silent):', err)
     }
   }
 
@@ -373,8 +371,8 @@ export default function ProductSearch() {
           </aside>
 
           <main className="w-full lg:w-3/4">
-            {loading && <p className="text-center">Loading products...</p>}
-            {error && <p className="text-center text-red-500">{error}</p>}
+            {loading       && <p className="text-center">Loading products...</p>}
+            {productError  && <p className="text-center text-red-500">{productError}</p>}
             
             {/* Display product count with price change info */}
             <div className="mb-4 text-gray-600">
@@ -391,11 +389,12 @@ export default function ProductSearch() {
               alignItems: 'start',
             }}>
               {displayedProducts.map((product, index) => (
-                <div key={product.id}>
+                <div key={product.id} className="min-w-0">
                   <ProductCard 
                     product={product}
                     brands={brands}
                     categories={categories}
+                    className="h-full"
                   />
                 </div>
               ))}

@@ -76,7 +76,7 @@ export function ProductCard({ product, brands, categories }: ProductCardProps) {
 
   return (
     <Card className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-      <div className="relative">
+      <div className="relative h-64">
         {imageError ? (
           // Display a placeholder if the image failed to load
           <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
@@ -87,7 +87,7 @@ export function ProductCard({ product, brands, categories }: ProductCardProps) {
           <img 
             src={`/product_images/${product.images}`} 
             alt={product.name} 
-            className="w-full h-64 object-cover"
+            className="w-full h-full object-cover"
             onError={() => setImageError(true)}
           />
         )}
@@ -107,7 +107,9 @@ export function ProductCard({ product, brands, categories }: ProductCardProps) {
       </div>
       
       <CardContent className="p-4">
-        <h3 className="font-semibold text-lg mb-2 text-purple-700">{product.name}</h3>
+      <h3 className="font-semibold text-lg mb-2 text-purple-700 line-clamp-2">
+  {product.name}
+</h3>
         
         {/* Price change details */}
         {product.priceChangeInfo && (
@@ -134,7 +136,7 @@ export function ProductCard({ product, brands, categories }: ProductCardProps) {
           </div>
         )}
         
-        <p className="text-gray-600 mb-2 flex items-center">
+        <p className="font-bold text-pink-600 min-w-0">
           <Tag className="w-4 h-4 mr-1" /> {brands.find(b => b.id === product.brandId)?.name || 'Unknown Brand'}
         </p>
         

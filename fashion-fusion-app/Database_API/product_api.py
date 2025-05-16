@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # Database connection details
-DATABASE_URL = "mysql+pymysql://root:much@127.0.0.1:3306/fashionfusion"
+DATABASE_URL = "mysql+pymysql://root:PokemonDestroyer10000@127.0.0.1:3306/fashionfusion"
 engine = create_engine(DATABASE_URL, pool_recycle=3600)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -211,8 +211,8 @@ async def get_products_by_brand(brand_id: int, db: Session = Depends(get_db)):
 @app.get("/products/", response_model=List[ProductOut])
 async def get_products(
     search_query: str = "", 
-    category_id: Optional[int] = Query(None),
-    brand_id: Optional[int] = Query(None),
+    category_id: Optional[List[int]] = Query(None),
+    brand_id: Optional[List[int]] = Query(None),
     price_min: Optional[float] = Query(None),
     price_max: Optional[float] = Query(None),
     price_increased: Optional[bool] = Query(None),
@@ -242,9 +242,9 @@ async def get_products(
         if search_query:
             query = query.filter(Product.name.like(f"%{search_query}%"))
         if category_id:
-            query = query.filter(Product.categoryId == category_id)
+            query = query.filter(Product.categoryId.in_(category_id))
         if brand_id:
-            query = query.filter(Product.brandId == brand_id)
+            query = query.filter(Product.brandId.in_(brand_id))
         if price_min is not None:
             query = query.filter(Product.price >= price_min)
         if price_max is not None:
