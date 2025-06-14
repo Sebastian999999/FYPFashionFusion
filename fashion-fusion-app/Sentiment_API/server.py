@@ -94,7 +94,7 @@ async def get_brand_rankings():
         print("No processed reviews found, returning mock rankings")
         return get_mock_rankings()
     
-    # Start with processed reviews
+    # Start with processed reviews 
     combined_reviews = {brand_id: list(reviews) for brand_id, reviews in processed_reviews.items()}
     
     # Add reviews from database via Reviews API
