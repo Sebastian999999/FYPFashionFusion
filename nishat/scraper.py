@@ -12,8 +12,8 @@ try:
     db_connection = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
-    password="1234",
-    database="Fasih",
+    password="PokemonDestroyer10000",
+    database="fashionfusion",
     auth_plugin='mysql_native_password'
 )
     cursor = db_connection.cursor()

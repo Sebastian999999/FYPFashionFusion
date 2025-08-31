@@ -1,60 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, Menu, X, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
+import { Smile, Meh, Frown, Brain, Star, TrendingUp, Search, /*Menu, X, */Facebook, Twitter, Instagram, Linkedin, User2, LogOut, ShoppingBag } from 'lucide-react'
+import { ChatHelp } from '@/components/chat-help'
+
 
 export default function AboutPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <Link href="/">
-                <h1 className="text-2xl font-bold text-purple-700">PakFashionAI</h1>
-              </Link>
-            </div>
-            <nav className="hidden md:flex space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-              <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-              <Link href="/ai-brand-rankings" className="text-gray-600 hover:text-purple-700">Brand Rankings</Link>
-              <Link href="/about" className="text-purple-700 hover:text-purple-900 font-semibold">About</Link>
-              <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-              
-            </nav>
-            <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden py-4">
-              <nav className="flex flex-col space-y-2">
-              <Link href="/" className="text-gray-600 hover:text-purple-700">Home</Link>
-              <Link href="/product-search" className="text-gray-600 hover:text-purple-700">Search</Link>
-              <Link href="/ai-brand-rankings" className="text-gray-600 hover:text-purple-700">Brand Rankings</Link>
-              <Link href="/about" className="text-purple-700 hover:text-purple-900 font-semibold">About</Link>
-              <Link href="/auth" className="text-gray-600 hover:text-purple-700">Login/Signup</Link>
-              </nav>
-            </div>
-          )}
-        </div>
-      </header>
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center mb-8 text-purple-700">About PakFashionAI</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-purple-700">About Fashion Fusion</h1>
         
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Our Mission</h2>
           <p className="text-lg mb-4">
-            At PakFashionAI, we're revolutionizing the way Pakistani fashion brands are evaluated and ranked. Our mission is to provide consumers with unbiased, emotion-driven insights into the quality, style, value, and service of Pakistan's top fashion brands.
+            At Fashion Fusion, we are revolutionizing the way Pakistani fashion brands are evaluated and ranked. Our mission is to provide consumers with unbiased, emotion-driven insights into the quality, style, value, and service of Pakistan's top fashion brands.
           </p>
           <p className="text-lg">
             By harnessing the power of artificial intelligence and natural language processing, we analyze thousands of customer reviews to capture the true sentiment behind each brand experience. This innovative approach allows us to go beyond simple star ratings, offering a nuanced understanding of what customers really feel about their fashion purchases.
@@ -109,12 +75,25 @@ export default function AboutPage() {
               </CardContent>
             </Card>
           </div>
+          <section className="mb-12">
+          <h2 className="text-2xl font-semibold mb-4 text-purple-600">How Our AI Works</h2>
+          <div className="flex justify-end mb-4">
+            <ChatHelp 
+              question="Can you explain more about how the sentiment analysis works to generate brand scores?"
+              buttonText="Learn more about our AI"
+              variant="outline"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Existing cards */}
+          </div>
+        </section>
         </section>
 
         <section className="mb-12">
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Understanding Our Scores</h2>
           <p className="text-lg mb-4">
-            Our emotion-based scoring system provides a comprehensive view of brand performance. Here's how to interpret our scores:
+            Our emotion-based scoring system provides a comprehensive view of brand performance. Here is how to interpret our scores:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
@@ -196,7 +175,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-4 text-purple-600">Join Us in Revolutionizing Fashion Reviews</h2>
           <p className="text-lg mb-4">
-            Whether you're a fashion enthusiast, a brand representative, or simply curious about the intersection of AI and fashion, we invite you to explore our rankings, contribute your reviews, and be part of this exciting journey in reshaping how we understand and evaluate fashion brands in Pakistan.
+            Whether you are a fashion enthusiast, a brand representative, or simply curious about the intersection of AI and fashion, we invite you to explore our rankings, contribute your reviews, and be part of this exciting journey in reshaping how we understand and evaluate fashion brands in Pakistan.
           </p>
           <div className="flex justify-center">
             <Link href="/ai-brand-rankings">
@@ -208,46 +187,6 @@ export default function AboutPage() {
         </section>
       </main>
 
-      <footer className="bg-gradient-to-r from-purple-600 to-pink-600 text-white mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">About Us</h3>
-              <p className="text-sm">We use AI to analyze emotional content in customer reviews, providing nuanced rankings of Pakistani fashion brands.</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link href="/" className="text-sm hover:underline">Home</Link></li>
-                <li><Link href="/product-search" className="text-sm hover:underline">Top Brands</Link></li>
-                <li><Link href="/ai-brand-rankings" className="text-sm hover:underline">AI Rankings</Link></li>
-                <li><Link href="/about" className="text-sm hover:underline">About Us</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">AI-Powered Rankings</h3>
-              <p className="text-sm">Our advanced AI analyzes the emotional content of thousands of customer reviews to provide unbiased, sentiment-based brand rankings.</p>
-              <div className="flex items-center mt-2">
-                <Smile className="w-5 h-5 text-yellow-400 mr-1" />
-                <Meh className="w-5 h-5 text-yellow-400 mr-1" />
-                <Frown className="w-5 h-5 text-yellow-400" />
-              </div>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-gray-300"><Facebook /></a>
-                <a href="#" className="hover:text-gray-300"><Twitter /></a>
-                <a href="#" className="hover:text-gray-300"><Instagram /></a>
-                <a href="#" className="hover:text-gray-300"><Linkedin /></a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-sm">&copy; 2023 PakFashionAI. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
